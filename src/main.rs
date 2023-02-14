@@ -1,6 +1,5 @@
-mod cnt_db;
-use axum::{*, routing::{get, post}, response::Html};
-use serde::{Deserialize, Serialize};
+use axum::{*, routing::{get, post}, response::Html, http::uri::PathAndQuery, extract::Path};
+use serde::{Serialize};
 #[derive(Serialize)]
 struct Js{
     name: &'static str,
@@ -16,9 +15,9 @@ struct Info{
 #[tokio::main]
 async fn main() {
     let app = Router::new()
-        .route("/{name}", get(index))
-        .route("/up", get(count_up))
-        .route("/info", get(json))
+        .route("/", get(index))
+        .route("/json", get(json))
+        .route("/hello/:name", get(hello))
         ;
 
     Server::bind(&"127.0.0.1:8080".parse().unwrap())
@@ -27,15 +26,10 @@ async fn main() {
         .unwrap();
 }
 
-async fn index(name: String) -> Html<&'static str>{
-    println!("log: {name}");
+async fn index() -> Html<&'static str>{
     Html::from("<h1>hello</h1>")
 }
 
-async fn count_up() -> &'static str{
-    let n = cnt_db::db::Db::new();
-    "ok"
-}
 async fn json() -> (http::StatusCode, Json<Js>){
     let j = Json::from(Js{
         name: "5-23",
@@ -46,4 +40,9 @@ async fn json() -> (http::StatusCode, Json<Js>){
         }
     });
     (http::StatusCode::CREATED, j)
+}
+
+async fn hello(Path(name): Path<String>) -> Html<String>{
+    println!("{name:?}");
+    Html::from(format!("hello <b>{name:?}</b>!"))
 }
