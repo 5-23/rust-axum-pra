@@ -18,6 +18,7 @@ async fn main() {
         .route("/", get(index))
         .route("/json", get(json))
         .route("/hello/:name", get(hello))
+        .route("/info/:name/:age", get(info))
         ;
 
     Server::bind(&"127.0.0.1:8080".parse().unwrap())
@@ -45,4 +46,9 @@ async fn json() -> (http::StatusCode, Json<Js>){
 async fn hello(Path(name): Path<String>) -> Html<String>{
     println!("{name:?}");
     Html::from(format!("hello <b>{name:?}</b>!"))
+}
+
+async fn info(Path((name, age)): Path<(String, usize)>) -> Html<String>{
+    println!("{name:?}, {age}");
+    Html::from(format!("<h1>{name:?}</h1>age: <b>{age}</b>"))
 }
