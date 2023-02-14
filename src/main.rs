@@ -18,7 +18,10 @@ async fn main() {
         .route("/", get(index))
         .route("/json", get(json))
         .route("/hello/:name", get(hello))
+        .route("/hello/:name/*a", get(error_404))
         .route("/info/:name/:age", get(info))
+        .route("/info/:name/:name/*a", get(error_404))
+        .route("/*a", get(error_404))
         ;
 
     Server::bind(&"127.0.0.1:8080".parse().unwrap())
@@ -51,4 +54,8 @@ async fn hello(Path(name): Path<String>) -> Html<String>{
 async fn info(Path((name, age)): Path<(String, usize)>) -> Html<String>{
     println!("{name:?}, {age}");
     Html::from(format!("<h1>{name:?}</h1>age: <b>{age}</b>"))
+}
+
+async fn error_404() -> Html<&'static str>{
+    Html("<h1>404 Not Found</h1>")
 }
