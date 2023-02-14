@@ -20,7 +20,7 @@ async fn main() {
         .route("/hello/:name", get(hello))
         .route("/hello/:name/*a", get(error_404))
         .route("/info/:name/:age", get(info))
-        .route("/info/:name/:name/*a", get(error_404))
+        .route("/info/:name/:age/*a", get(error_404))
         .route("/*a", get(error_404))
         ;
 
