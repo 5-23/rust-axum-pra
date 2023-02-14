@@ -7,4 +7,5 @@ edition = "2021"
 
 [dependencies]
 axum = { version = "0.6.6", features = ["macros"] }
+mysql = "23.0.1"
 tokio = { version = "1.25.0", features = ["macros", "rt-multi-thread"] }
